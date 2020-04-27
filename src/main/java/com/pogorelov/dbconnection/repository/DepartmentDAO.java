@@ -2,20 +2,21 @@ package com.pogorelov.dbconnection.repository;
 
 import com.pogorelov.dbconnection.domain.Department;
 
-import java.util.List;
+import javax.persistence.EntityManager;
 import java.util.Optional;
 
-public class DepartmentDAO {
+public class DepartmentDAO extends GenericDAO<Department, Long> {
 
-    private static final String GET_ALL = "Select * From department";
-
-
-
-    public List<Department> findAllDepartments() {
-
+    public Optional<Department> getDepartmentByName(String name) {
+        EntityManager em = getEntityManager();
+        Department departmentFromDB = (Department) em.createQuery("SELECT department FROM Department department where department.name = ?1")
+                .setParameter(1, name).getSingleResult();
+        em.close();
+        return Optional.ofNullable(departmentFromDB);
     }
 
-    public Optional<Department> findDepartmentById(Long id) {
-        Optional.ofNullable()
+    @Override
+    public Class<Department> getEntityClass() {
+        return Department.class;
     }
 }

@@ -1,43 +1,30 @@
 import com.pogorelov.dbconnection.domain.Department;
-import com.pogorelov.dbconnection.service.DepartmentService;
-import org.postgresql.Driver;
+import com.pogorelov.dbconnection.service.ServiceFactory;
 
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Main {
 
-    private static final DepartmentService departmentService;
-
-    private static final String URL = "jdbc:postgresql://localhost:5432/postgres";
-    private static final String USERNAME = "postgres";
-    private static final String PASSWORD = "postgres";
+    private static final ServiceFactory serviceFactory = new ServiceFactory();
 
     public static void main(String[] args) {
-        departmentService.findAllDepartments();
-        Connection connection;
-        Statement statement;
-        try {
-            //Driver driver = new FabricMySQLDriver();
-            //http://mvnrepository.com/artifact/mysql/mysql-connector-java/5.1.6
-            DriverManager.registerDriver(new Driver());
-            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-            statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM department");
-            List<Department> departments = new ArrayList<>();
-            while (resultSet.next()) {
-                Long id = resultSet.getLong(1);
-                String name = resultSet.getString(2);
-                System.out.println("DEPARTMENT: " + id + ": " + name);
-                departments.add(new Department(id, name));
-            }
-            System.out.println("DEPARTMENTS LIST: " + departments);
-            connection.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//        Department department = new Department();
+//        department.setId(3L);
+//        department.setName("Management");
+//        serviceFactory.getDepartmentService().updateDepartment(department);
+//        serviceFactory.getDepartmentService().deleteDepartment(4L);
+//        System.out.println(serviceFactory.getDepartmentService().getAllDepartments());
+//
+//        System.out.println(serviceFactory.getDepartmentService().findDepartmentByName("IT"));
 
-
+        Department department = new Department();
+        serviceFactory.getDepartmentService().createDepartment(department);
+        department.setId(3L);
+        department.setName("Test");
+        serviceFactory.getDepartmentService().updateDepartment(department);
+        System.out.println(serviceFactory.getDepartmentService().findDepartmentById(3L));
+        serviceFactory.getDepartmentService().deleteDepartment(3L);
+        System.out.println(serviceFactory.getDepartmentService().getAllDepartments());
     }
+
+
 }

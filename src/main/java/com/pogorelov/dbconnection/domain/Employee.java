@@ -1,16 +1,15 @@
 package com.pogorelov.dbconnection.domain;
 
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Data
-@RequiredArgsConstructor
 @Entity
-@Table(name = "department")
-public class Department {
+@Table(name = "employee")
+public class Employee {
 
     @Id
     @GeneratedValue(generator = "increment")
@@ -20,4 +19,12 @@ public class Department {
 
     @Column(name = "name")
     private String name;
+
+    @Column(name = "salary")
+    private BigDecimal salary;
+
+    @ManyToOne
+    @JoinColumn(name = "departmentid")
+    private Department department;
+
 }
