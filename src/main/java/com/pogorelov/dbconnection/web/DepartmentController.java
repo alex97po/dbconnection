@@ -25,7 +25,7 @@ public class DepartmentController extends HttpServlet {
         processGetRequest(req, resp);
     }
 
-    private void processGetRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    private void processGetRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         if (req.getParameterMap().containsKey("id")){
             Long departmentId = Long.parseLong(req.getParameter("id"));
             Department department = serviceFactory.getDepartmentService().findDepartmentById(departmentId);
@@ -33,19 +33,18 @@ public class DepartmentController extends HttpServlet {
             resp.setContentType("application/json");
             writer.println(objectMapper.writeValueAsString(department));
         } else {
-            PrintWriter writer = resp.getWriter();
-            resp.setContentType("application/json");
             List<Department> departments = serviceFactory.getDepartmentService().getAllDepartments();
-            writer.println(objectMapper.writeValueAsString(departments));
+            req.setAttribute("departments", departments);
+            req.getRequestDispatcher("department-list.jsp").forward(req, resp);
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Department department =
-                objectMapper.readValue(req.getReader().lines().collect(Collectors.joining(System.lineSeparator())), Department.class);
+        Department department = new Department();
+        department.setName(req.getParameter("name"));
         serviceFactory.getDepartmentService().createDepartment(department);
-        resp.setStatus(204);
+        resp.sendRedirect("/servlet/departments");
     }
 
     @Override
